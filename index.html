@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#0a1210" />
+<meta name="color-scheme" content="dark" />
+<meta name="description" content="璀璨宝石 Splendor 3D 人机对战 —— 浏览器直接开玩" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="璀璨宝石" />
+<meta name="format-detection" content="telephone=no" />
+<title>璀璨宝石 · 3D 人机对战</title>
+<script>
+  /* 尽早判定「手机」，给 <html> 打个标记：竖屏提示层靠它决定是否显示，
+     放在这里是为了避免先闪一下桌面布局再被盖住。
+     判定同时看 UA、触摸能力、指针类型和屏幕尺寸——单独任何一项在部分浏览器上都不可靠。 */
+  (function () {
+    try {
+      var ua = navigator.userAgent || '';
+      var mobileUA = /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|Windows Phone/i.test(ua);
+      var touchable =
+        (navigator.maxTouchPoints || 0) > 0 ||
+        ('ontouchstart' in window) ||
+        (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+      var shortSide = Math.min(screen.width || 9999, screen.height || 9999);
+      var shortView = Math.min(window.innerWidth || 9999, window.innerHeight || 9999);
+      if (mobileUA || (touchable && (shortSide <= 820 || shortView <= 820))) {
+        document.documentElement.classList.add('is-phone');
+      }
+    } catch (e) {}
+  })();
+</script>
+<link rel="manifest" href="./manifest.webmanifest" />
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png" />
+<link rel="stylesheet" href="./styles.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.js",
+    "three/addons/": "./vendor/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app">
+  <div id="stage"></div>
+
+  <header id="topbar">
+    <div class="brand">
+      <span class="gem-logo"></span>
+      <div class="brand-text">
+        <h1>璀璨宝石</h1>
+        <p>SPLENDOR · 3D</p>
+      </div>
+    </div>
+    <div class="turninfo">
+      <div class="turn-chip" id="turnChip"><span id="turnDot"></span><span id="turnText">准备开始</span></div>
+      <div class="round-chip">第 <b id="roundNo">1</b> 轮</div>
+    </div>
+    <div class="tools">
+      <button class="btn ghost" id="btnRules">规则</button>
+      <button class="btn ghost" id="btnSettings">设置</button>
+      <button class="btn ghost hidden" id="btnFull">全屏</button>
+      <button class="btn primary" id="btnRestart">重新开局</button>
+    </div>
+  </header>
+
+  <aside id="players"></aside>
+
+  <aside id="logpanel">
+    <h4>对局记录</h4>
+    <ul id="log"></ul>
+  </aside>
+
+  <div id="actionbar">
+    <div id="actionMain">
+      <div class="hint-row">
+        <span class="hint-icon">◆</span>
+        <span id="hintText">点击桌上的宝石筹码，或直接点卡牌购买</span>
+      </div>
+      <div id="selectionChips" class="chips"></div>
+    </div>
+    <div id="actionButtons" class="actions"></div>
+  </div>
+
+  <div id="tooltip" class="hidden"></div>
+
+  <div id="overlay" class="hidden"></div>
+
+  <!-- 竖屏提示：手机竖着拿时盖住画面，引导转成横屏 -->
+  <div id="rotate">
+    <div class="rot-inner">
+      <div class="rot-phone"><span class="rot-gem"></span></div>
+      <p class="rot-title">请横屏游戏</p>
+      <p class="rot-sub" id="rotSub">把手机转成横向，整张宝石牌桌才会完整展开</p>
+      <button class="btn primary" id="rotFull">全屏并锁定横屏</button>
+      <button class="rot-skip" id="rotSkip">我就要竖着玩</button>
+    </div>
+  </div>
+
+  <div id="loading">
+    <div class="loading-inner">
+      <span class="gem-logo big"></span>
+      <p>正在打磨宝石…</p>
+    </div>
+  </div>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
